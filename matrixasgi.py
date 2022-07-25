@@ -1,9 +1,17 @@
 """Matrix ASGI Server."""
 import argparse
+import asyncio
+import importlib
 import logging
+import os
+import sys
+from typing import Dict, Any
 
 from nio import AsyncClient
+from nio.events.room_events import RoomMessageText
+from nio.exception import LocalProtocolError
 from nio.responses import JoinError, RoomSendError
+from nio.rooms import MatrixRoom
 
 LOGGER = logging.getLogger("matrixasgi")
 
@@ -48,11 +56,62 @@ class Server:
             help="increment verbosity level",
         )
 
+        parser.add_argument(
+            "application",
+            help="The ASGI application instance to use as path.to.module:application",
+        )
+
         self.args = parser.parse_args()
 
         self.client = AsyncClient(self.args.matrix_url, self.args.matrix_id)
+        self.client.add_event_callback(self.message_callback, RoomMessageText)
+        application = get_application(self.args.application)
 
-    async def join_room(room_id: str) -> bool:
+        scope = {
+            "type": "matrix",
+            "asgi": {
+                "version": "3.0",
+                "spec_version": "1.0",
+            },
+        }
+
+        self.application = application(
+            scope, receive=self.app_receive, send=self.app_send
+        )
+        self.receive_queue = asyncio.Queue()
+
+    def run(self):
+        LOGGER.info("Staring...")
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.main())
+
+    async def main(self):
+        await self.client.login(self.args.matrix_pw)
+        await self.client.sync_forever(timeout=30000)
+
+    async def app_receive(self):
+        await self.receive_queue.get()
+
+    async def app_send(self, message):
+        match message["type"]:
+            case "matrix.receive":
+                print(f"app_send got receive {message=}")
+            case "matrix.send":
+                print(f"app_send got send {message=}")
+            case "matrix.join":
+                print(f"app_send got join {message=}")
+
+    async def message_callback(self, room: MatrixRoom, event: RoomMessageText):
+        await self.receive_queue.put(
+            {
+                "type": "matrix.receive",
+                "room": room.display_name,
+                "user": room.user_name(event.sender),
+                "body": event.body,
+            }
+        )
+
+    async def join_room(self, room_id: str) -> bool:
         """Try to join the room."""
         LOGGER.debug(f"Join room {room_id=}")
 
@@ -64,7 +123,7 @@ class Server:
                 match resp.status_code:
                     case "M_UNKNOWN_TOKEN":
                         LOGGER.warning("Reconnecting")
-                        await self.client.login(conf.MATRIX_PW)
+                        await self.client.login(self.args.matrix_pw)
                     case "M_FORBIDDEN" | "M_CONSENT_NOT_GIVEN":
                         LOGGER.error("room access is forbidden")
                         return False
@@ -77,7 +136,7 @@ class Server:
         LOGGER.error("Homeserver not responding")
         return False
 
-    async def send_room_message(room_id: str, content Dict[Any, Any]) -> bool:
+    async def send_room_message(self, room_id: str, content: Dict[Any, Any]) -> bool:
         """Send a message to a room."""
         LOGGER.debug(f"Sending room message in {room_id=}: {content=}")
 
@@ -90,7 +149,7 @@ class Server:
                     return True
                 if resp.status_code == "M_UNKNOWN_TOKEN":
                     LOGGER.warning("Reconnecting")
-                    await self.client.login(conf.MATRIX_PW)
+                    await self.client.login(self.args.matrix_pw)
                 else:
                     LOGGER.error(f"room send error {resp=}")
                     return False
@@ -99,3 +158,18 @@ class Server:
             LOGGER.warning("Trying again")
         LOGGER.error("Homeserver not responding")
         return False
+
+
+def get_application(application_name):
+    # copy-paste from https://github.com/sivulich/mqttasgi/blob/master/mqttasgi/utils.py
+    sys.path.insert(0, ".")
+    module_path, object_path = application_name.split(":", 1)
+    application = importlib.import_module(module_path)
+    for bit in object_path.split("."):
+        application = getattr(application, bit)
+
+    return application
+
+
+if __name__ == "__main__":
+    Server().run()
