@@ -18,7 +18,7 @@ from . import conf, utils
 LOGGER = logging.getLogger("matrixasgi")
 
 
-class Server:
+class AsgiMatrixServer:
     def __init__(self):
         self.args = conf.get_parser().parse_args(__doc__)
 
@@ -150,7 +150,3 @@ class Server:
             "formatted_body": markdown(message, extensions=["extra"]),
         }
         await self.send_room_message(room, content)
-
-
-if __name__ == "__main__":
-    Server().run()
