@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Matrix ASGI Server."""
 import argparse
 import asyncio
@@ -9,7 +10,7 @@ from typing import Dict, Any
 
 from nio import AsyncClient
 from nio.events.room_events import RoomMessageText
-from nio.exception import LocalProtocolError
+from nio.exceptions import LocalProtocolError
 from nio.responses import JoinError, RoomSendError
 from nio.rooms import MatrixRoom
 
@@ -63,36 +64,43 @@ class Server:
 
         self.args = parser.parse_args()
 
+        logging.basicConfig(level=50 - 10 * self.args.verbose)
+
         self.client = AsyncClient(self.args.matrix_url, self.args.matrix_id)
         self.client.add_event_callback(self.message_callback, RoomMessageText)
-        application = get_application(self.args.application)
+        self.application = get_application(self.args.application)
 
-        scope = {
+        self.app_scope = {
             "type": "matrix",
             "asgi": {
                 "version": "3.0",
                 "spec_version": "1.0",
             },
         }
-
-        self.application = application(
-            scope, receive=self.app_receive, send=self.app_send
-        )
-        self.receive_queue = asyncio.Queue()
+        self.queue = None
 
     def run(self):
         LOGGER.info("Staring...")
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.main())
+        asyncio.run(self.main())
 
     async def main(self):
+        self.queue = asyncio.Queue()
         await self.client.login(self.args.matrix_pw)
-        await self.client.sync_forever(timeout=30000)
+        task_app = asyncio.create_task(
+            self.application(
+                self.app_scope, receive=self.app_receive, send=self.app_send
+            ),
+        )
+        task_client = asyncio.create_task(
+            self.client.sync_forever(timeout=30000),
+        )
+        await asyncio.gather(task_app, task_client)
 
     async def app_receive(self):
-        await self.receive_queue.get()
+        return await self.queue.get()
 
     async def app_send(self, message):
+        LOGGER.info(f"app_send {message=}")
         match message["type"]:
             case "matrix.receive":
                 print(f"app_send got receive {message=}")
@@ -102,7 +110,8 @@ class Server:
                 print(f"app_send got join {message=}")
 
     async def message_callback(self, room: MatrixRoom, event: RoomMessageText):
-        await self.receive_queue.put(
+        LOGGER.debug("message_callback {room=} {event=}")
+        await self.queue.put(
             {
                 "type": "matrix.receive",
                 "room": room.display_name,

@@ -14,3 +14,6 @@ class MatrixConsumer(AsyncConsumer):
 
     async def send(self, matrix_message):
         pass
+
+    async def matrix_receive(self, matrix_message):
+        await self.receive(matrix_message)
