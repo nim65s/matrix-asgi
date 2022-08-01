@@ -20,8 +20,3 @@ Version: 1.0
 - `type`: `"matrix.send"`
 - `room`: the room id to send the message to
 - `body`: the message
-
-## Join - `join` event
-
-- `type`: `"matrix.join"`
-- `room`: the room id to join
