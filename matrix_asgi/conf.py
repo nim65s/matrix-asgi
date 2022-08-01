@@ -44,3 +44,4 @@ def get_parser(doc):
         "application",
         help="The ASGI application instance to use as path.to.module:application",
     )
+    return parser
