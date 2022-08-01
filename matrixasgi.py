@@ -82,7 +82,7 @@ class Server:
         self.queue = None
 
     def run(self):
-        LOGGER.info("Staring...")
+        LOGGER.info("Starting...")
         asyncio.run(self.main())
 
     async def main(self):
@@ -107,7 +107,7 @@ class Server:
         return await self.queue.get()
 
     async def app_send(self, message):
-        LOGGER.info(f"app_send {message=}")
+        LOGGER.debug(f"app_send {message=}")
         match message["type"]:
             case "matrix.receive":
                 LOGGER.error(f"app_send got receive {message=}")
