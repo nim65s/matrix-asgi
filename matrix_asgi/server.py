@@ -20,7 +20,7 @@ LOGGER = logging.getLogger("matrix-asgi")
 
 class AsgiMatrixServer:
     def __init__(self):
-        self.args = conf.get_parser().parse_args(__doc__)
+        self.args = conf.get_parser(__doc__).parse_args()
 
         logging.basicConfig(level=50 - 10 * self.args.verbose)
 
