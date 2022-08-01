@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Matrix ASGI Server."""
-import argparse
 import asyncio
 import importlib
 import logging
-import os
 from signal import SIGINT, SIGTERM
 import sys
 from typing import Dict, Any
@@ -17,55 +15,14 @@ from nio.rooms import MatrixRoom
 
 from markdown import markdown
 
+from . import conf
+
 LOGGER = logging.getLogger("matrixasgi")
 
 
 class Server:
     def __init__(self):
-        parser = argparse.ArgumentParser(
-            description=__doc__, prog="python -m matrixasgi"
-        )
-        parser.add_argument(
-            "-u",
-            "--matrix-url",
-            default=os.environ.get("MATRIX_URL", "https://matrix.org"),
-            help="matrix homeserver url. Default: `https://matrix.org`. "
-            "Environment variable: `MATRIX_URL`",
-        )
-        parser.add_argument(
-            "-i",
-            "--matrix-id",
-            help="matrix user-id. Required. Environment variable: `MATRIX_ID`",
-            **(
-                {"default": os.environ["MATRIX_ID"]}
-                if "MATRIX_ID" in os.environ
-                else {"required": True}
-            ),
-        )
-        parser.add_argument(
-            "-p",
-            "--matrix-pw",
-            help="matrix password. Required. Environment variable: `MATRIX_PW`",
-            **(
-                {"default": os.environ["MATRIX_PW"]}
-                if "MATRIX_PW" in os.environ
-                else {"required": True}
-            ),
-        )
-        parser.add_argument(
-            "-v",
-            "--verbose",
-            action="count",
-            default=0,
-            help="increment verbosity level",
-        )
-
-        parser.add_argument(
-            "application",
-            help="The ASGI application instance to use as path.to.module:application",
-        )
-
-        self.args = parser.parse_args()
+        self.args = conf.get_parser().parse_args(__doc__)
 
         logging.basicConfig(level=50 - 10 * self.args.verbose)
 
