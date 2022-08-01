@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "matrixasgi"
+version = "0.1.0"
+description = "Bridge between Matrix and Django Channels through ASGI"
+authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
+license = "BSD-2-Clause"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+channels = "^3.0.5"
+matrix-nio = "^0.19.0"
+Markdown = "^3.4.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
