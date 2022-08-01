@@ -14,6 +14,8 @@ from nio.exceptions import LocalProtocolError
 from nio.responses import JoinError, RoomSendError
 from nio.rooms import MatrixRoom
 
+from markdown import markdown
+
 LOGGER = logging.getLogger("matrixasgi")
 
 
@@ -94,6 +96,11 @@ class Server:
         task_client = asyncio.create_task(
             self.client.sync_forever(timeout=30000),
         )
+        await self.queue.put(
+            {
+                "type": "matrix.connect",
+            }
+        )
         await asyncio.gather(task_app, task_client)
 
     async def app_receive(self):
@@ -103,9 +110,9 @@ class Server:
         LOGGER.info(f"app_send {message=}")
         match message["type"]:
             case "matrix.receive":
-                print(f"app_send got receive {message=}")
+                LOGGER.error(f"app_send got receive {message=}")
             case "matrix.send":
-                print(f"app_send got send {message=}")
+                await self.matrix_room_send(message["room"], message["body"])
             case "matrix.join":
                 print(f"app_send got join {message=}")
 
@@ -167,6 +174,15 @@ class Server:
             LOGGER.warning("Trying again")
         LOGGER.error("Homeserver not responding")
         return False
+
+    async def matrix_room_send(self, room, message):
+        content = {
+            "msgtype": "m.text",
+            "body": message,
+            "format": "org.matrix.custom.html",
+            "formatted_body": markdown(message, extensions=["extra"]),
+        }
+        await self.send_room_message(room, content)
 
 
 def get_application(application_name):
