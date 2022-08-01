@@ -15,7 +15,7 @@ from markdown import markdown
 
 from . import conf, utils
 
-LOGGER = logging.getLogger("matrixasgi")
+LOGGER = logging.getLogger("matrix-asgi")
 
 
 class AsgiMatrixServer:

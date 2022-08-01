@@ -4,7 +4,7 @@ import os
 
 
 def get_parser(doc):
-    parser = argparse.ArgumentParser(description=doc, prog="python -m matrixasgi")
+    parser = argparse.ArgumentParser(description=doc, prog="matrix-asgi")
     parser.add_argument(
         "-u",
         "--matrix-url",

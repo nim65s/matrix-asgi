@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "matrixasgi"
+name = "matrix-asgi"
 version = "0.1.0"
 description = "Bridge between Matrix and Django Channels through ASGI"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
@@ -12,6 +12,9 @@ matrix-nio = "^0.19.0"
 Markdown = "^3.4.1"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+matrix-asgi = "matrix_asgi.__main__:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
