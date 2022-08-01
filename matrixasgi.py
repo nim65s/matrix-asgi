@@ -5,6 +5,7 @@ import asyncio
 import importlib
 import logging
 import os
+from signal import SIGINT, SIGTERM
 import sys
 from typing import Dict, Any
 
@@ -84,16 +85,29 @@ class Server:
     def run(self):
         LOGGER.info("Starting...")
         asyncio.run(self.main())
+        LOGGER.info("Stopped")
+
+    def terminate(self, event, signal):
+        """Close handling stuff."""
+        event.set()
+        asyncio.get_running_loop().remove_signal_handler(signal)
 
     async def main(self):
         self.queue = asyncio.Queue()
+        self.event = asyncio.Event()
+
+        for sig in (SIGINT, SIGTERM):
+            asyncio.get_running_loop().add_signal_handler(
+                sig, self.terminate, self.event, sig
+            )
+
         await self.client.login(self.args.matrix_pw)
-        task_app = asyncio.create_task(
+        asyncio.create_task(
             self.application(
                 self.app_scope, receive=self.app_receive, send=self.app_send
             ),
         )
-        task_client = asyncio.create_task(
+        asyncio.create_task(
             self.client.sync_forever(timeout=30000),
         )
         await self.queue.put(
@@ -101,7 +115,11 @@ class Server:
                 "type": "matrix.connect",
             }
         )
-        await asyncio.gather(task_app, task_client)
+
+        LOGGER.info("Started")
+        await self.event.wait()
+        LOGGER.info("Stopping...")
+        await self.client.close()
 
     async def app_receive(self):
         return await self.queue.get()
