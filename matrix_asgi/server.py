@@ -84,11 +84,10 @@ class AsgiMatrixServer:
     async def app_send(self, message):
         """ASGI application `send` method: Dispatch incomming Channel messages."""
         LOGGER.debug(f"app_send {message=}")
-        match message["type"]:
-            case "matrix.receive":
-                LOGGER.error(f"app_send got receive {message=}")
-            case "matrix.send":
-                await self.matrix_room_send(message["room"], message["body"])
+        if message["type"] == "matrix.receive":
+            LOGGER.error(f"app_send got receive {message=}")
+        elif message["type"] == "matrix.send":
+            await self.matrix_room_send(message["room"], message["body"])
 
     async def message_callback(self, room: MatrixRoom, event: RoomMessageText):
         """Handle an incomming message from matrix-nio client: put it in the Queue."""
@@ -111,16 +110,15 @@ class AsgiMatrixServer:
                 resp = await self.client.join(room_id)
                 if not isinstance(resp, JoinError):
                     return True
-                match resp.status_code:
-                    case "M_UNKNOWN_TOKEN":
-                        LOGGER.warning("Reconnecting")
-                        await self.login()
-                    case "M_FORBIDDEN" | "M_CONSENT_NOT_GIVEN":
-                        LOGGER.error("room access is forbidden")
-                        return False
-                    case "M_UNKNOWN":
-                        LOGGER.error(f"join error: {resp.transport_response.status}")
-                        return False
+                if resp.status_code == "M_UNKNOWN_TOKEN":
+                    LOGGER.warning("Reconnecting")
+                    await self.login()
+                elif resp.status_code in ["M_FORBIDDEN", "M_CONSENT_NOT_GIVEN"]:
+                    LOGGER.error("room access is forbidden")
+                    return False
+                elif resp.status_code == "M_UNKNOWN":
+                    LOGGER.error(f"join error: {resp.transport_response.status}")
+                    return False
             except LocalProtocolError as e:
                 LOGGER.error(f"Send error: {e}")
             LOGGER.warning("Trying again")
