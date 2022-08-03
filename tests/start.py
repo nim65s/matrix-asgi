@@ -4,7 +4,7 @@
 import argparse
 import logging
 from os import environ
-from subprocess import Popen, run, check_call
+from subprocess import Popen, run
 from time import time
 
 import httpx
@@ -69,7 +69,7 @@ def run_and_test():
 
     # Run the main unittest module
     LOGGER.info("Runnig unittests")
-    ret = check_call(["coverage", "run", "./manage.py", "test"], cwd="tests")
+    ret = run(["coverage", "run", "./manage.py", "test"], cwd="tests").returncode == 0
 
     LOGGER.info("Stopping synapse")
     srv.terminate()
@@ -84,4 +84,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     log_format = "%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(message)s"
     logging.basicConfig(level=50 - 10 * args.verbose, format=log_format)
-    exit(run_and_test())
+    exit(not run_and_test())
