@@ -91,7 +91,7 @@ def run_and_test():
     ret = run(
         ["coverage", "run", "./manage.py", "test"],
         cwd="tests",
-        # env={"ROOM_ID": room_id, **environ},
+        env={"ROOM_ID": room_id, **environ},
     )
 
     LOGGER.info("Stopping Matrix ASGI server")
