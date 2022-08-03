@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
 
 import os
 
+from django.core.asgi import get_asgi_application
 
 from channels.routing import ProtocolTypeRouter
-from django.core.asgi import get_asgi_application
+
+import django_app
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.settings")
 
@@ -21,5 +23,6 @@ application = get_asgi_application()
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
+        "matrix": django_app.consumers.DjangoAppMatrixConsumer.as_asgi(),
     }
 )

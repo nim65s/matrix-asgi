@@ -2,6 +2,7 @@
 """Entry point to start an instrumentalized app for coverage and run tests."""
 
 import argparse
+import asyncio
 import logging
 from os import environ
 from subprocess import Popen, run
@@ -9,6 +10,7 @@ from time import time
 
 import httpx
 import yaml
+import nio
 from synapse._scripts.register_new_matrix_user import request_registration
 
 MATRIX_URL, MATRIX_ID, MATRIX_PW = (
@@ -67,9 +69,33 @@ def run_and_test():
         secret = yaml.safe_load(f.read()).get("registration_shared_secret", None)
     request_registration(MATRIX_ID, MATRIX_PW, MATRIX_URL, secret, admin=True)
 
+    # Create a room
+    async def create_room():
+        client = nio.AsyncClient(homeserver=MATRIX_URL, user=MATRIX_ID)
+        await client.login(MATRIX_PW)
+        room = await client.room_create(name="Test Room")
+        await client.close()
+        return room.room_id
+
+    room_id = asyncio.run(create_room())
+
+    # Start the Matrix ASGI server
+    server = Popen(
+        ["matrix-asgi", "django_project.asgi:application"],
+        cwd="tests",
+        env={"ROOM_ID": room_id, **environ},
+    )
+
     # Run the main unittest module
     LOGGER.info("Runnig unittests")
-    ret = run(["coverage", "run", "./manage.py", "test"], cwd="tests").returncode == 0
+    ret = run(
+        ["coverage", "run", "./manage.py", "test"],
+        cwd="tests",
+        # env={"ROOM_ID": room_id, **environ},
+    )
+
+    LOGGER.info("Stopping Matrix ASGI server")
+    server.terminate()
 
     LOGGER.info("Stopping synapse")
     srv.terminate()
@@ -77,7 +103,7 @@ def run_and_test():
     LOGGER.info("Processing coverage")
     for cmd in ["report", "html", "xml"]:
         run(["coverage", cmd])
-    return ret
+    return ret.returncode == 0
 
 
 if __name__ == "__main__":

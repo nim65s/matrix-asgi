@@ -6,7 +6,7 @@ authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 license = "BSD-2-Clause"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 channels = "^3.0.5"
 matrix-nio = "^0.19.0"
 Markdown = "^3.4.1"
@@ -15,6 +15,7 @@ Markdown = "^3.4.1"
 channels-redis = "^3.4.1"
 coverage = "^6.4.2"
 pydocstyle = "^6.1.1"
+httpx = "^0.23.0"
 
 [tool.poetry.scripts]
 matrix-asgi = "matrix_asgi.__main__:main"

@@ -1,4 +1,10 @@
 """Models for django_app."""
-# from django.db import models
+from django.db import models
 
-# Create your models here.
+
+class Message(models.Model):
+    """Send and Receive Matrix messages."""
+
+    user = models.CharField(max_length=250)
+    room = models.CharField(max_length=250)
+    text = models.TextField()
