@@ -12,6 +12,8 @@ matrix-nio = "^0.19.0"
 Markdown = "^3.4.1"
 
 [tool.poetry.dev-dependencies]
+channels-redis = "^3.4.1"
+coverage = "^6.4.2"
 
 [tool.poetry.scripts]
 matrix-asgi = "matrix_asgi.__main__:main"
