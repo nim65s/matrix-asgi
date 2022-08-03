@@ -19,7 +19,10 @@ LOGGER = logging.getLogger("matrix-asgi")
 
 
 class AsgiMatrixServer:
+    """Matrix ASGI Server."""
+
     def __init__(self):
+        """Initialize."""
         self.args = conf.get_parser(__doc__).parse_args()
 
         logging.basicConfig(level=50 - 10 * self.args.verbose)
@@ -39,14 +42,17 @@ class AsgiMatrixServer:
         self.event = None
 
     def run(self):
+        """Start the synchronous ASGI server."""
         LOGGER.info("Starting...")
         asyncio.run(self.main())
         LOGGER.info("Stopped")
 
     async def login(self):
+        """Login or re-login on matrix homeserver."""
         await self.client.login(self.args.matrix_pw)
 
     async def main(self):
+        """Start the asynchronous ASGI server."""
         self.queue = asyncio.Queue()
         self.event = asyncio.Event()
 
@@ -76,6 +82,7 @@ class AsgiMatrixServer:
         await self.client.close()
 
     async def app_send(self, message):
+        """ASGI application `send` method: Dispatch incomming Channel messages."""
         LOGGER.debug(f"app_send {message=}")
         match message["type"]:
             case "matrix.receive":
@@ -84,6 +91,7 @@ class AsgiMatrixServer:
                 await self.matrix_room_send(message["room"], message["body"])
 
     async def message_callback(self, room: MatrixRoom, event: RoomMessageText):
+        """Handle an incomming message from matrix-nio client: put it in the Queue."""
         LOGGER.debug("message_callback {room=} {event=}")
         await self.queue.put(
             {
@@ -95,7 +103,7 @@ class AsgiMatrixServer:
         )
 
     async def join_room(self, room_id: str) -> bool:
-        """Try to join the room."""
+        """Use matrix-nio client to join a room."""
         LOGGER.debug(f"Join room {room_id=}")
 
         for _ in range(10):
@@ -120,7 +128,7 @@ class AsgiMatrixServer:
         return False
 
     async def send_room_message(self, room_id: str, content: Dict[Any, Any]) -> bool:
-        """Send a message to a room."""
+        """Use matrix-nio client to send a Matrix message to a room."""
         LOGGER.debug(f"Sending room message in {room_id=}: {content=}")
 
         for _ in range(10):
@@ -143,6 +151,7 @@ class AsgiMatrixServer:
         return False
 
     async def matrix_room_send(self, room, message):
+        """Handle an incoming matrix.send message from Channel: forward it to Matrix."""
         content = {
             "msgtype": "m.text",
             "body": message,

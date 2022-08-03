@@ -4,6 +4,7 @@ import os
 
 
 def get_parser(doc):
+    """Configure the argument parser from environment and command line."""
     parser = argparse.ArgumentParser(description=doc, prog="matrix-asgi")
     parser.add_argument(
         "-u",

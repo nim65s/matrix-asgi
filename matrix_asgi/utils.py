@@ -1,10 +1,14 @@
+"""Utility functions."""
 import asyncio
 import importlib
 import sys
 
 
 def get_application(application_name):
-    # copy-paste from https://github.com/sivulich/mqttasgi/blob/master/mqttasgi/utils.py
+    """Load a callable from a `module.submodule:Object.callable` string.
+
+    copy-paste from https://github.com/sivulich/mqttasgi/blob/master/mqttasgi/utils.py
+    """
     sys.path.insert(0, ".")
     module_path, object_path = application_name.split(":", 1)
     application = importlib.import_module(module_path)
