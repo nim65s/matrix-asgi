@@ -6,7 +6,6 @@ import logging
 from os import environ
 from subprocess import Popen, run, check_call
 from time import time
-from unittest import main
 
 import httpx
 import yaml

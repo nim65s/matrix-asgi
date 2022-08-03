@@ -3,7 +3,7 @@
 import asyncio
 import logging
 from signal import SIGINT, SIGTERM
-from typing import Dict, Any
+from typing import Any
 
 from nio import AsyncClient
 from nio.events.room_events import RoomMessageText
@@ -127,7 +127,7 @@ class AsgiMatrixServer:
         LOGGER.error("Homeserver not responding")
         return False
 
-    async def send_room_message(self, room_id: str, content: Dict[Any, Any]) -> bool:
+    async def send_room_message(self, room_id: str, content: dict[Any, Any]) -> bool:
         """Use matrix-nio client to send a Matrix message to a room."""
         LOGGER.debug(f"Sending room message in {room_id=}: {content=}")
 
