@@ -29,17 +29,18 @@ RUN chown -R 991:991 . \
  && echo "  burst_count: 1000" >> homeserver.yaml \
  && python -m synapse.app.homeserver --config-path homeserver.yaml --generate-keys
 
-#RUN pip install --no-cache-dir markdown matrix-nio httpx coverage channels .
 WORKDIR /app
 ADD pyproject.toml poetry.lock .
-ADD matrix_asgi matrix_asgi
 RUN --mount=type=cache,sharing=locked,target=/root/.cache \
     python -m pip install -U pip \
  && python -m pip install poetry \
  && poetry add cffi==1.15.0 \
  && poetry export --dev > requirements.txt \
- && python -m pip install -r requirements.txt \
- && python -m pip install .
+ && python -m pip install -r requirements.txt
+
+ADD matrix_asgi matrix_asgi
+RUN --mount=type=cache,sharing=locked,target=/root/.cache \
+    python -m pip install .
 
 
 CMD ./tests/start.py -vvv
