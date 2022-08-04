@@ -1,0 +1,22 @@
+name: Lints
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: setup
+        run: |
+          python -m pip install -U poetry
+          poetry config virtualenvs.create false --local
+          poetry install --no-interaction --no-ansi
+      - run: flake8 .
+      - run: black .
+      - run: pydocstyle
+      - run: safety check
+      - run: poetry check
+      - run: pyupgrade --py39-plus
