@@ -5,6 +5,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: docker-compose -f test.yml up --exit-code-from tests
+        env:
+          COMPOSE_DOCKER_CLI_BUILD: 1
+          DOCKER_BUILDKIT: 1
       - uses: codecov/codecov-action@v1
         with:
           files: tests/coverage.xml
