@@ -30,7 +30,7 @@ RUN chown -R 991:991 . \
  && python -m synapse.app.homeserver --config-path homeserver.yaml --generate-keys
 
 WORKDIR /app
-ADD pyproject.toml poetry.lock .
+ADD pyproject.toml poetry.lock ./
 RUN --mount=type=cache,sharing=locked,target=/root/.cache \
     python -m pip install -U pip \
  && python -m pip install poetry \
