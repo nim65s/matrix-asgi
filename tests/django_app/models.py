@@ -7,4 +7,5 @@ class Message(models.Model):
 
     user = models.CharField(max_length=250)
     room = models.CharField(max_length=250)
-    text = models.TextField()
+    type = models.CharField(max_length=250)
+    body = models.TextField()

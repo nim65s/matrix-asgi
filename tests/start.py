@@ -79,13 +79,6 @@ def run_and_test():
 
     room_id = asyncio.run(create_room())
 
-    # Start the Matrix ASGI server
-    server = Popen(
-        ["matrix-asgi", "django_project.asgi:application"],
-        cwd="tests",
-        env={"ROOM_ID": room_id, **environ},
-    )
-
     # Run the main unittest module
     LOGGER.info("Runnig unittests")
     ret = run(
@@ -94,15 +87,12 @@ def run_and_test():
         env={"ROOM_ID": room_id, **environ},
     )
 
-    LOGGER.info("Stopping Matrix ASGI server")
-    server.terminate()
-
     LOGGER.info("Stopping synapse")
     srv.terminate()
 
     LOGGER.info("Processing coverage")
     for cmd in ["report", "html", "xml"]:
-        run(["coverage", cmd])
+        run(["coverage", cmd], cwd="tests")
     return ret.returncode == 0
 
 

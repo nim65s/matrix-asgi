@@ -15,15 +15,19 @@ from markdown import markdown
 
 from . import conf, utils
 
-LOGGER = logging.getLogger("matrix-asgi")
+LOGGER = logging.getLogger("matrix-asgi.server")
 
 
 class AsgiMatrixServer:
     """Matrix ASGI Server."""
 
-    def __init__(self):
+    def __init__(self, /, application="", verbosity=0):
         """Initialize."""
         self.args = conf.get_parser(__doc__).parse_args()
+        if verbosity:
+            self.args.verbose = verbosity
+        if application:
+            self.args.application = application
 
         logging.basicConfig(level=50 - 10 * self.args.verbose)
 
@@ -51,15 +55,16 @@ class AsgiMatrixServer:
         """Login or re-login on matrix homeserver."""
         await self.client.login(self.args.matrix_pw)
 
-    async def main(self):
+    async def main(self, event=None):
         """Start the asynchronous ASGI server."""
         self.queue = asyncio.Queue()
-        self.event = asyncio.Event()
+        self.event = event or asyncio.Event()
 
-        for sig in (SIGINT, SIGTERM):
-            asyncio.get_running_loop().add_signal_handler(
-                sig, utils.terminate, self.event, sig
-            )
+        if event is None:
+            for sig in (SIGINT, SIGTERM):
+                asyncio.get_running_loop().add_signal_handler(
+                    sig, utils.terminate, self.event, sig
+                )
 
         await self.login()
         asyncio.create_task(
@@ -77,6 +82,12 @@ class AsgiMatrixServer:
         )
 
         LOGGER.info("Started")
+
+        if event is None:
+            await self.serve()
+
+    async def serve(self):
+        """Server requests for ever."""
         await self.event.wait()
         LOGGER.info("Stopping...")
         await self.client.close()

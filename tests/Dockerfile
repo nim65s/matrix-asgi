@@ -38,9 +38,4 @@ RUN --mount=type=cache,sharing=locked,target=/root/.cache \
  && poetry export --dev > requirements.txt \
  && python -m pip install -r requirements.txt
 
-ADD matrix_asgi matrix_asgi
-RUN --mount=type=cache,sharing=locked,target=/root/.cache \
-    python -m pip install .
-
-
 CMD ./tests/start.py -vvv

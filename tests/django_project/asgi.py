@@ -13,16 +13,15 @@ from django.core.asgi import get_asgi_application
 
 from channels.routing import ProtocolTypeRouter
 
-import django_app
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.settings")
 
-application = get_asgi_application()
+django_asgi_app = get_asgi_application()
 
+import django_app.consumers  # noqa: E402
 
 application = ProtocolTypeRouter(
     {
-        "http": get_asgi_application(),
+        "http": django_asgi_app,
         "matrix": django_app.consumers.DjangoAppMatrixConsumer.as_asgi(),
     }
 )
