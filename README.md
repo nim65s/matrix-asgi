@@ -46,11 +46,14 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -u MATRIX_URL, --matrix-url MATRIX_URL
-                        matrix homeserver url. Default: `https://matrix.org`. Environment variable: `MATRIX_URL`
+                        matrix homeserver url. Default: `https://matrix.org`.
+                        Environment variable: `MATRIX_URL`
   -i MATRIX_ID, --matrix-id MATRIX_ID
-                        matrix user-id. Required. Environment variable: `MATRIX_ID`
+                        matrix user-id. Required.
+                        Environment variable: `MATRIX_ID`
   -p MATRIX_PW, --matrix-pw MATRIX_PW
-                        matrix password. Required. Environment variable: `MATRIX_PW`
+                        matrix password. Required.
+                        Environment variable: `MATRIX_PW`
   -v, --verbose         increment verbosity level
 ```
 
