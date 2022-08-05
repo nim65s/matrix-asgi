@@ -690,6 +690,7 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 snowballstemmer = "*"
+toml = {version = "*", optional = true, markers = "extra == \"toml\""}
 
 [package.extras]
 toml = ["toml"]
@@ -1054,7 +1055,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "a226b9b14e30c267e2af7f2058e0b15042b5c9805236e6ef1f1e547bbccae860"
+content-hash = "e7fc49303767f22391d1114fb15a00187da72ac069e0d2e98cb49cbfd2ff4351"
 
 [metadata.files]
 aiofiles = [

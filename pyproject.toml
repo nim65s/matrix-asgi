@@ -14,7 +14,7 @@ Markdown = "^3.4.1"
 [tool.poetry.dev-dependencies]
 channels-redis = "^3.4.1"
 coverage = "^6.4.2"
-pydocstyle = "^6.1.1"
+pydocstyle = {extras = ["toml"], version = "^6.1.1"}
 httpx = "^0.23.0"
 safety = "^2.1.1"
 flake8 = "^5.0.4"
@@ -23,6 +23,9 @@ pyupgrade = "^2.37.3"
 
 [tool.poetry.scripts]
 matrix-asgi = "matrix_asgi.__main__:main"
+
+[tool.pydocstyle]
+match_dir = "(?=[^.])(?!migrations).*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
