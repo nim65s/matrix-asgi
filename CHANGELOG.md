@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- fix release
+
 ## [v0.2.0] - 2022-08-05
 
 - use Django 4.1 async ORM for tests
