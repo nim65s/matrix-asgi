@@ -45,7 +45,7 @@ class AsgiMatrixServer:
         self.queue = None
         self.event = None
 
-    def run(self):
+    def run(self):  # pragma: no cover
         """Start the synchronous ASGI server."""
         LOGGER.info("Starting...")
         asyncio.run(self.main())
@@ -60,7 +60,7 @@ class AsgiMatrixServer:
         self.queue = asyncio.Queue()
         self.event = event or asyncio.Event()
 
-        if event is None:
+        if event is None:  # pragma: no cover
             for sig in (SIGINT, SIGTERM):
                 asyncio.get_running_loop().add_signal_handler(
                     sig, utils.terminate, self.event, sig
@@ -83,22 +83,25 @@ class AsgiMatrixServer:
 
         LOGGER.info("Started")
 
-        if event is None:
+        if event is None:  # pragma: no cover
             await self.serve()
 
     async def serve(self):
         """Server requests for ever."""
         await self.event.wait()
+        await self.queue.put(
+            {
+                "type": "matrix.disconnect",
+            }
+        )
         LOGGER.info("Stopping...")
         await self.client.close()
 
     async def app_send(self, message):
         """ASGI application `send` method: Dispatch incomming Channel messages."""
         LOGGER.debug(f"app_send {message=}")
-        if message["type"] == "matrix.receive":
-            LOGGER.error(f"app_send got receive {message=}")
-        elif message["type"] == "matrix.send":
-            await self.matrix_room_send(message["room"], message["body"])
+        assert message["type"] == "matrix.send"
+        await self.matrix_room_send(message["room"], message["body"])
 
     async def message_callback(self, room: MatrixRoom, event: RoomMessageText):
         """Handle an incomming message from matrix-nio client: put it in the Queue."""
@@ -112,7 +115,7 @@ class AsgiMatrixServer:
             }
         )
 
-    async def join_room(self, room_id: str) -> bool:
+    async def join_room(self, room_id: str) -> bool:  # pragma: no cover
         """Use matrix-nio client to join a room."""
         LOGGER.debug(f"Join room {room_id=}")
 
@@ -147,17 +150,17 @@ class AsgiMatrixServer:
                 )
                 if not isinstance(resp, RoomSendError):
                     return True
-                if resp.status_code == "M_UNKNOWN_TOKEN":
+                if resp.status_code == "M_UNKNOWN_TOKEN":  # pragma: no cover
                     LOGGER.warning("Reconnecting")
                     await self.login()
-                else:
+                else:  # pragma: no cover
                     LOGGER.error(f"room send error {resp=}")
                     return False
-            except LocalProtocolError as e:
+            except LocalProtocolError as e:  # pragma: no cover
                 LOGGER.error(f"Send error: {e}")
-            LOGGER.warning("Trying again")
-        LOGGER.error("Homeserver not responding")
-        return False
+            LOGGER.warning("Trying again")  # pragma: no cover
+        LOGGER.error("Homeserver not responding")  # pragma: no cover
+        return False  # pragma: no cover
 
     async def matrix_room_send(self, room, message):
         """Handle an incoming matrix.send message from Channel: forward it to Matrix."""

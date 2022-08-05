@@ -86,4 +86,6 @@ class MatrixAsgiTestCase(TestCase):
             message = messages.chunk[0]
             self.assertEqual(message.body, "world")
 
-            await client.close()
+        await client.close()
+        self.assertEqual(await sync_to_async(Message.objects.count)(), 2)
+        await asyncio.sleep(2)

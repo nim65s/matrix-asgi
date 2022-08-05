@@ -16,7 +16,7 @@ def get_application(application_name):
     return application
 
 
-def terminate(event, signal):
+def terminate(event, signal):  # pragma: no cover
     """Close handling stuff."""
     event.set()
     asyncio.get_running_loop().remove_signal_handler(signal)

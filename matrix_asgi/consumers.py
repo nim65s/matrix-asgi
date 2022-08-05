@@ -13,15 +13,23 @@ class MatrixConsumer(AsyncConsumer):
 
     async def connect(self):
         """Connect method to be subclassed by users."""
-        pass
+        pass  # pragma: no cover
+
+    async def disconnect(self):
+        """Disonnect method to be subclassed by users."""
+        pass  # pragma: no cover
 
     async def receive(self, matrix_message):
         """Receive method to be subclassed by users."""
-        pass
+        pass  # pragma: no cover
 
     async def matrix_connect(self, event):
         """Initialize connection."""
         await self.connect()
+
+    async def matrix_disconnect(self, event):
+        """Initialize connection."""
+        await self.disconnect(0)
 
     async def matrix_receive(self, event):
         """Handle an incoming message from Matrix: forward it to Channels.
