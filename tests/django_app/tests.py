@@ -53,7 +53,7 @@ class MatrixAsgiTestCase(TestCase):
             client = nio.AsyncClient(MATRIX_URL, MATRIX_ID)
             await client.login(MATRIX_PW)
 
-            # Send a message prefixed with !
+            # Send a matrix message prefixed with !
             ret = await client.room_send(
                 room_id=ROOM_ID,
                 message_type="m.room.message",
@@ -65,7 +65,7 @@ class MatrixAsgiTestCase(TestCase):
             message = await sync_to_async(Message.objects.get)()
             self.assertEqual(message.body, "hello")
 
-            # Send a message not prefixed with !
+            # Send a matrix message not prefixed with !
             ret = await client.room_send(
                 room_id=ROOM_ID,
                 message_type="m.room.message",
@@ -74,5 +74,16 @@ class MatrixAsgiTestCase(TestCase):
             self.assertEqual(ret.transport_response.status, 200)
             await asyncio.sleep(2)
             self.assertEqual(await sync_to_async(Message.objects.count)(), 1)
+
+            # Create a Message and send it to Matrix
+            message = await sync_to_async(Message.objects.create)(
+                user="me", room=ROOM_ID, type="matrix.send", body="world"
+            )
+            await message.to_matrix()
+            await asyncio.sleep(2)
+            sync = await client.sync()
+            messages = await client.room_messages(ROOM_ID, sync.next_batch)
+            message = messages.chunk[0]
+            self.assertEqual(message.body, "world")
 
             await client.close()
