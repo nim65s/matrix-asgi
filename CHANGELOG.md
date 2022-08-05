@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - use Django 4.1 async ORM for tests
+- setup release process
 
 ## [v0.1.0] - 2020-08-05
+
 - Initial Release
 
 [Unreleased]: https://github.com/nim65s/matrix-webhook/compare/v0.1.0...master
