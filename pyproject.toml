@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "matrix-asgi"
-version = "0.2.2"
+version = "0.2.3"
 description = "ASGI Server for the Matrix protocol"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 license = "BSD-2-Clause"
