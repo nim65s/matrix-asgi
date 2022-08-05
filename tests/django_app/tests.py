@@ -3,7 +3,6 @@
 import asyncio
 import os
 
-from asgiref.sync import sync_to_async
 from django.test import TestCase
 import nio
 
@@ -48,7 +47,7 @@ class MatrixAsgiTestCase(TestCase):
     async def test_matrix2model(self):
         """Send a matrix message, and check a model instance got created."""
         async with MatrixAsgiTestingInstance():
-            self.assertEqual(await sync_to_async(Message.objects.count)(), 0)
+            self.assertEqual(await Message.objects.acount(), 0)
 
             client = nio.AsyncClient(MATRIX_URL, MATRIX_ID)
             await client.login(MATRIX_PW)
@@ -61,8 +60,8 @@ class MatrixAsgiTestCase(TestCase):
             )
             self.assertEqual(ret.transport_response.status, 200)
             await asyncio.sleep(2)
-            self.assertEqual(await sync_to_async(Message.objects.count)(), 1)
-            message = await sync_to_async(Message.objects.get)()
+            self.assertEqual(await Message.objects.acount(), 1)
+            message = await Message.objects.aget()
             self.assertEqual(message.body, "hello")
 
             # Send a matrix message not prefixed with !
@@ -73,10 +72,10 @@ class MatrixAsgiTestCase(TestCase):
             )
             self.assertEqual(ret.transport_response.status, 200)
             await asyncio.sleep(2)
-            self.assertEqual(await sync_to_async(Message.objects.count)(), 1)
+            self.assertEqual(await Message.objects.acount(), 1)
 
             # Create a Message and send it to Matrix
-            message = await sync_to_async(Message.objects.create)(
+            message = await Message.objects.acreate(
                 user="me", room=ROOM_ID, type="matrix.send", body="world"
             )
             await message.to_matrix()
@@ -87,5 +86,5 @@ class MatrixAsgiTestCase(TestCase):
             self.assertEqual(message.body, "world")
 
         await client.close()
-        self.assertEqual(await sync_to_async(Message.objects.count)(), 2)
+        self.assertEqual(await Message.objects.acount(), 2)
         await asyncio.sleep(2)

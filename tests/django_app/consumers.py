@@ -1,6 +1,4 @@
 """Consumers for django_app to test matrix-asgi."""
-from asgiref.sync import sync_to_async
-
 from matrix_asgi.consumers import MatrixConsumer
 
 from .models import Message
@@ -21,7 +19,7 @@ class DjangoAppMatrixConsumer(MatrixConsumer):
 
     async def receive(self, matrix_message):
         """Receive a Matrix Message and save it into a Django Model."""
-        await sync_to_async(Message.objects.create)(**matrix_message)
+        await Message.objects.acreate(**matrix_message)
 
     async def django_app_message(self, message):
         """Send a Matrix Message from django model."""
