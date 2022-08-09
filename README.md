@@ -12,6 +12,8 @@
 
 with [matrix-nio](https://github.com/poljar/matrix-nio)
 
+[`#matrix-asgi:laas.fr`](https://matrix.to/#/#matrix-asgi:laas.fr)
+
 ## Install
 
 ```
