@@ -28,6 +28,10 @@ Django = ">=4.1"
 [tool.poetry.scripts]
 matrix-asgi = "matrix_asgi.__main__:main"
 
+[tool.poetry.group.dev.dependencies]
+twine = "^4.0.1"
+wheel = "^0.37.1"
+
 [tool.pydocstyle]
 match_dir = "(?=[^.])(?!migrations).*"
 
