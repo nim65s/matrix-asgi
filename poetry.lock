@@ -548,21 +548,19 @@ trio = ["async_generator", "trio"]
 
 [[package]]
 name = "jsonschema"
-version = "3.2.0"
+version = "4.17.1"
 description = "An implementation of JSON Schema validation for Python"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [package.dependencies]
 attrs = ">=17.4.0"
-pyrsistent = ">=0.14.0"
-setuptools = "*"
-six = ">=1.11.0"
+pyrsistent = ">=0.14.0,<0.17.0 || >0.17.0,<0.17.1 || >0.17.1,<0.17.2 || >0.17.2"
 
 [package.extras]
-format = ["idna", "jsonpointer (>1.13)", "rfc3987", "strict-rfc3339", "webcolors"]
-format-nongpl = ["idna", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3986-validator (>0.1.0)", "webcolors"]
+format = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3987", "uri-template", "webcolors (>=1.11)"]
+format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3986-validator (>0.1.0)", "uri-template", "webcolors (>=1.11)"]
 
 [[package]]
 name = "keyring"
@@ -618,11 +616,11 @@ testing = ["coverage", "pyyaml"]
 
 [[package]]
 name = "matrix-nio"
-version = "0.19.0"
+version = "0.20.1"
 description = "A Python Matrix client library, designed according to sans I/O principles."
 category = "main"
 optional = false
-python-versions = ">=3.6.1,<4.0.0"
+python-versions = ">=3.7.0,<4.0.0"
 
 [package.dependencies]
 aiofiles = ">=0.6.0,<0.7.0"
@@ -631,7 +629,7 @@ aiohttp-socks = ">=0.7.0,<0.8.0"
 future = ">=0.18.2,<0.19.0"
 h11 = ">=0.12.0,<0.13.0"
 h2 = ">=4.0.0,<5.0.0"
-jsonschema = ">=3.2.0,<4.0.0"
+jsonschema = ">=4.4.0,<5.0.0"
 logbook = ">=1.5.3,<2.0.0"
 pycryptodome = ">=3.10.1,<4.0.0"
 unpaddedbase64 = ">=2.1.0,<3.0.0"
@@ -1280,7 +1278,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "89b8d41cda44d39377c28fde23fb3dde049b325c8f50305c3cc8a735b9502789"
+content-hash = "16617c3e9844c2c6dce30a4d150746655e81b75b585d4784acadc1dcf8b0f4d2"
 
 [metadata.files]
 aiofiles = [
@@ -1760,8 +1758,8 @@ jeepney = [
     {file = "jeepney-0.8.0.tar.gz", hash = "sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806"},
 ]
 jsonschema = [
-    {file = "jsonschema-3.2.0-py2.py3-none-any.whl", hash = "sha256:4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163"},
-    {file = "jsonschema-3.2.0.tar.gz", hash = "sha256:c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a"},
+    {file = "jsonschema-4.17.1-py3-none-any.whl", hash = "sha256:410ef23dcdbca4eaedc08b850079179883c2ed09378bd1f760d4af4aacfa28d7"},
+    {file = "jsonschema-4.17.1.tar.gz", hash = "sha256:05b2d22c83640cde0b7e0aa329ca7754fbd98ea66ad8ae24aa61328dfe057fa3"},
 ]
 keyring = [
     {file = "keyring-23.11.0-py3-none-any.whl", hash = "sha256:3dd30011d555f1345dec2c262f0153f2f0ca6bca041fb1dc4588349bb4c0ac1e"},
@@ -1783,8 +1781,8 @@ markdown = [
     {file = "Markdown-3.4.1.tar.gz", hash = "sha256:3b809086bb6efad416156e00a0da66fe47618a5d6918dd688f53f40c8e4cfeff"},
 ]
 matrix-nio = [
-    {file = "matrix-nio-0.19.0.tar.gz", hash = "sha256:fb413e2db457380f6798c90f3caac4730a5e0b0d4ab1b8f4fc4af2e35ac9356c"},
-    {file = "matrix_nio-0.19.0-py3-none-any.whl", hash = "sha256:e5f43bc1a343f87982b597a5f6aa712468b619363f543a201e5a8c847e518c01"},
+    {file = "matrix_nio-0.20.1-py3-none-any.whl", hash = "sha256:fd537e90ccd98e876fda91ab1f7eace9d754f788ae1d52f5803c60d1515d1a4e"},
+    {file = "matrix_nio-0.20.1.tar.gz", hash = "sha256:21a846a972fea6e372a867b46f89a5742c00c0e6daabbc44f4228e4ca959ac47"},
 ]
 mccabe = [
     {file = "mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"},
