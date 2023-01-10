@@ -15,7 +15,7 @@ repos:
     -   id: mixed-line-ending
     -   id: trailing-whitespace
 -   repo: https://github.com/PyCQA/pydocstyle
-    rev: 6.1.1
+    rev: 6.2.3
     hooks:
     -   id: pydocstyle
 -   repo: https://github.com/PyCQA/flake8
