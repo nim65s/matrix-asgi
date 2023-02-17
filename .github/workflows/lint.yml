@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: pipx install poetry
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
           cache: poetry
-      - run: pipx install poetry
       - name: setup
         run: poetry install --with dev --no-interaction --no-ansi
       - run: poetry run flake8 .
