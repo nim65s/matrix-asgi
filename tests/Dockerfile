@@ -31,11 +31,12 @@ RUN chown -R 991:991 . \
 
 WORKDIR /app
 ADD pyproject.toml poetry.lock ./
+ENV PATH=/root/.local/bin:$PATH
 RUN --mount=type=cache,sharing=locked,target=/root/.cache \
     python -m pip install -U pip \
- && python -m pip install poetry \
- && poetry add cffi==1.15.0 \
- && poetry export --dev > requirements.txt \
+ && python -m pip install pipx \
+ && pipx install poetry \
+ && poetry export --with dev > requirements.txt \
  && python -m pip install -r requirements.txt
 
 CMD ./tests/start.py -vvv
