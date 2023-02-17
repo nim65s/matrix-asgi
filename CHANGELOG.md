@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- update channels & channels-redis to v4 + daphne
-- update ci cache
+- update channels & channels-redis >= 4 + add daphne
 - update for poetry >= 1.2
+- cache ci
 
 ## [v1.0.0] - 2022-08-05
 
