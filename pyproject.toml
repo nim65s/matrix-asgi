@@ -11,8 +11,8 @@ repository = "https://github.com/nim65s/matrix-asgi.git"
 [tool.poetry.dependencies]
 python = "^3.9"
 channels = {extras = ["daphne"], version = "^4.0.0"}
-matrix-nio = "^0.20.0"
-Markdown = "^3.4.1"
+matrix-nio = "^0.20.2"
+Markdown = "^3.4.3"
 
 [tool.poetry.group.dev]
 optional = true
