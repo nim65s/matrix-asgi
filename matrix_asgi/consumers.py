@@ -1,4 +1,5 @@
 """Matrix ASGI Consumers."""
+
 from channels.consumer import AsyncConsumer
 
 import logging
