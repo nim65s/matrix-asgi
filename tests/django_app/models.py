@@ -1,4 +1,5 @@
 """Models for django_app."""
+
 from django.db import models
 
 from channels.layers import get_channel_layer
