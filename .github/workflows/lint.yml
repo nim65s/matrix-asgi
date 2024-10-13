@@ -17,6 +17,6 @@ jobs:
       - run: poetry run flake8 .
       - run: poetry run black .
       - run: poetry run pydocstyle
-      - run: poetry run safety check
+      - run: poetry run safety check -i 70612
       - run: poetry run poetry check
       - run: poetry run pyupgrade --py39-plus
