@@ -6,7 +6,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: docker compose -f test.yml up --exit-code-from tests
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
