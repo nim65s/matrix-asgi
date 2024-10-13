@@ -10,24 +10,24 @@ repository = "https://github.com/nim65s/matrix-asgi.git"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-channels = {extras = ["daphne"], version = "^4.0.0"}
+channels = {extras = ["daphne"], version = "^4.1.0"}
 matrix-nio = "^0.20.2"
-Markdown = "^3.4.3"
+Markdown = "^3.7"
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-channels-redis = "^4.0.0"
-coverage = "^6.4.2"
-pydocstyle = {extras = ["toml"], version = "^6.1.1"}
+channels-redis = "^4.2.0"
+coverage = "^7.6.2"
+pydocstyle = {extras = ["toml"], version = "^6.3.0"}
 httpx = "^0.23.0"
-safety = "^2.1.1"
-flake8 = "^5.0.4"
-black = "^22.6.0"
-pyupgrade = "^2.37.3"
-Django = ">=4.1"
-twine = "^4.0.1"
+safety = "^3.2.8"
+flake8 = "^7.1.1"
+black = "^24.10.0"
+pyupgrade = "^3.18.0"
+Django = ">=5.1.2"
+twine = "^5.1.1"
 wheel = "^0.38.0"
 
 [tool.poetry.scripts]
