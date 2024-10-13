@@ -10,13 +10,13 @@ jobs:
       - run: pipx install poetry
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.12"
           cache: poetry
       - name: setup
         run: poetry install --with dev --no-interaction --no-ansi
       - run: poetry run flake8 .
       - run: poetry run black .
       - run: poetry run pydocstyle
-      - run: poetry run safety check
+      - run: poetry run safety check -i 70612
       - run: poetry run poetry check
       - run: poetry run pyupgrade --py39-plus

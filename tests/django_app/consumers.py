@@ -1,4 +1,5 @@
 """Consumers for django_app to test matrix-asgi."""
+
 from matrix_asgi.consumers import MatrixConsumer
 
 from .models import Message

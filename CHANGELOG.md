@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- require python >= 3.10
+
 ## [v2.0.0] - 2023-02-17
 
 - update channels & channels-redis >= 4 + add daphne
