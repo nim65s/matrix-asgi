@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Matrix ASGI Server."""
+
 import asyncio
 import logging
 from signal import SIGINT, SIGTERM
